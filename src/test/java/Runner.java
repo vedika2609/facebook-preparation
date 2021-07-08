@@ -1,29 +1,24 @@
-import arraysandstrings.LongestSubstringWithoutRepetition;
-import arraysandstrings.RomanToInteger;
-import testdata.ExecutableClasses;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.jupiter.api.Test;
+import testdata.DataMap;
+import tests.TestExecutor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import static testdata.DataMap.ROMAN_TO_INTEGER;
 
 public class Runner {
-    public static void main(String[] args) {
-        Scanner sc= new Scanner(System.in);
-        System.out.print("Please provide the class enum to be executed: ");
-        String executableClassInput = sc.nextLine();
-        executor(ExecutableClasses.valueOf(executableClassInput)).forEach(System.out::println);
-    }
+    private static final Log LOG = LogFactory.getLog(Runner.class);
 
-    public static List<Object> executor(ExecutableClasses executableClass){
-        List<Object> outputList = new ArrayList<>();
-        switch (executableClass) {
-            case ROMAN_TO_INTEGER:
-                executableClass.getLabel().forEach(input -> outputList.add(new RomanToInteger().romanToInt(input.get(0))));
-                break;
-            case LONGEST_SUBSTRING_WITHOUT_REPETITION:
-                executableClass.getLabel().forEach(input -> outputList.add(new LongestSubstringWithoutRepetition().lengthOfLongestSubstring(input.get(0))));
-                break;
+    @Test
+    public void executeTest() {
+        String executableClassInput = StringUtils.isNotEmpty(System.getenv("TestName")) ?
+                System.getenv("TestName") : ROMAN_TO_INTEGER.name();
+        LOG.info("Executing Test:: " + executableClassInput);
+        try {
+            new TestExecutor().executor(DataMap.valueOf(executableClassInput));
+        } catch (Exception e){
+            LOG.error(String.format("Got exception %s while executing test %s", e.getMessage(), executableClassInput));
         }
-        return outputList;
     }
 }
